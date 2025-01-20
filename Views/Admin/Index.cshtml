@@ -1,0 +1,291 @@
+﻿<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div>
+    <div class="card b-r-15">
+        <div class="p-3">
+            <div class="d-flex align-items-center gap-2">
+                <h6 class="m-0">Date Periode : </h6>
+                <div class="date-periode">
+                    <select class="form-select" aria-label="Default select example">
+                        <option selected>All</option>
+                        <option value="1">Montly</option>
+                        <option value="2">Weekly</option>
+                        <option value="3">Daily</option>
+                    </select>
+                    <span class="icon"><i class="bi bi-calendar3"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="d-flex gap-1 mt-2">
+        <div class="card admin-sales">
+            <div class="admin-sales-details">
+                <div class="admin-sales-details-header">
+                    <span class="icon"><i class="bi bi-graph-up-arrow"></i></span>
+                    <span>Total Sales Amount</span>
+                </div>
+                <div class="admin-sales-details-content">
+                    <h4>₹ 12000.00</h4>
+                </div>
+            </div>
+            <div class="admin-sales-details-footer green d-flex align-items-center justify-content-between mt-3">
+                <span class="in-rupee">+ ₹ 1000.00</span>
+                <span class="in-per pe-0"><span>12.02%</span> <span class="icon-up ms-1"><i class="bi bi-arrow-up"></i></span></span>
+            </div>
+        </div>
+        <div class="card admin-sales">
+            <div class="admin-sales-details">
+                <div class="admin-sales-details-header">
+                    <span class="icon"><i class="bi bi-basket2"></i></span>
+                    <span>Total Items sales</span>
+                </div>
+                <div class="admin-sales-details-content">
+                    <h4>₹ 12000.00</h4>
+                </div>
+            </div>
+            <div class="admin-sales-details-footer green d-flex align-items-center justify-content-between mt-3">
+                <span class="in-rupee">+ ₹ 1000.00</span>
+                <span class="in-per pe-0"><span>12.02%</span> <span class="icon-up ms-1"><i class="bi bi-arrow-up"></i></span></span>
+            </div>
+        </div>
+        <div class="card admin-sales">
+            <div class="admin-sales-details">
+                <div class="admin-sales-details-header">
+                    <span class="icon"><i class="bi bi-currency-rupee"></i></span>
+                    <span>Total Net Profit</span>
+                </div>
+                <div class="admin-sales-details-content">
+                    <h4>₹ 12000.00</h4>
+                </div>
+            </div>
+            <div class="admin-sales-details-footer green d-flex align-items-center justify-content-between mt-3">
+                <span class="in-rupee">+ ₹ 1000.00</span>
+                <span class="in-per pe-0"><span>12.02%</span> <span class="icon-up ms-1"><i class="bi bi-arrow-up"></i></span></span>
+            </div>
+        </div>
+        <div class="card admin-sales">
+            <div class="admin-sales-details">
+                <div class="admin-sales-details-header">
+                    <span class="icon"><i class="bi bi-graph-up-arrow"></i></span>
+                    <span>Total Sales Amount</span>
+                </div>
+                <div class="admin-sales-details-content">
+                    <h4>₹ 12000.00</h4>
+                </div>
+            </div>
+            <div class="admin-sales-details-footer red d-flex align-items-center justify-content-between mt-3">
+                <span class="in-rupee">- ₹ 1000.00</span>
+                <span class="in-per pe-0"><span>12.02%</span> <span class="icon-up ms-1"><i class="bi bi-arrow-up"></i></span></span>
+            </div>
+        </div>
+    </div>
+    <div class="admin-sales-graph mt-3 d-flex gap-2">
+        <div class="card p-1">
+            <canvas id="salesChart" width="400" height="200"></canvas>
+        </div>
+        <div class="billing-orders d-flex">
+            <div class="card p-3 w-100">
+                <h5>Billing Request</h5>
+                <div class="w-100">
+                    <div class="ui-input-container">
+                        <input required=""
+                               placeholder="Search"
+                               class="ui-input"
+                               type="text" />
+                        <div class="ui-input-underline"></div>
+                        <div class="ui-input-highlight"></div>
+                        <div class="ui-input-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <path stroke-linejoin="round"
+                                      stroke-linecap="round"
+                                      stroke-width="2"
+                                      stroke="currentColor"
+                                      d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z"></path>
+                            </svg>
+                        </div>
+                    </div>
+
+                </div>
+                <table class="table mt-4" id="tbl-Order-bills">
+                    <thead>
+                        <tr>
+                            <th>Order Id</th>
+                            <th>Hall</th>
+                            <th>Table</th>
+                            <th>Date</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="card b-r-15 mt-2 p-2">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center gap-3">
+                <span class="icon"><i class="bi bi-basket-fill"></i></span>
+                <h4 class="m-0">All Orders</h4>
+            </div>
+            <div class="">
+                <div class="ui-input-container">
+                    <input required=""
+                           placeholder="Search"
+                           class="ui-input"
+                           type="text" />
+                    <div class="ui-input-underline"></div>
+                    <div class="ui-input-highlight"></div>
+                    <div class="ui-input-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <path stroke-linejoin="round"
+                                  stroke-linecap="round"
+                                  stroke-width="2"
+                                  stroke="currentColor"
+                                  d="M21 21L16.65 16.65M19 11C19 15.4183 15.4183 19 11 19C6.58172 19 3 15.4183 3 11C3 6.58172 6.58172 3 11 3C15.4183 3 19 6.58172 19 11Z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div>
+            <table class="table table-responsive" id="tbl-top-100">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Order Id</th>
+                        <th>Date & Time</th>
+                        <th>Hall</th>
+                        <th>Table</th>
+                        <th>Captain</th>
+                        <th>Order Status</th>
+                        <th>Total Payment</th>
+                        <th>Payment Status</th>
+                        <th>Payment Type</th>
+                        <th>Order Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas-billing-orders" aria-labelledby="offcanvasRightLabel">
+    <div class="offcanvas-header">
+        <div>
+            <div class="d-flex align-items-center justify-content-between">
+                <h5 class="m-0">Order ID  - <span class="preOrderId">#250113182422429</span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="mt-2">
+                <div>
+                    <input type="hidden" id="orderId" value="">
+                </div>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-dot fs-3"></i>
+                        <h6 class="order-hall m-0" id="hall">H1</h6>
+                    </div>
+                    <div class="d-flex align-items-center pe-2">
+                        <span>Dine-in</span>
+                        <i class="bi bi-dot fs-3"></i>
+                        <h6 class="order-table m-0" id="order-table">T2</h6>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="offcanvas-body p-0">
+        <div class="">
+            <div class="accordion" style="height:calc(100vh - 365px)">
+                <div class="order-menus">
+                </div>
+            </div>
+            <div class="position-absolute bottom-0 p-2 ps-3 pe-3 w-100  user-bill">
+                <div class="bill-total pt-2 pb-2">
+                    <div class="d-flex justify-content-between sub-total">
+                        <span>Subtotal</span>
+                        <h6 class="subtotal m-0" id="subtotal">₹ 20.00</h6>
+                    </div>
+                    <div class="d-flex justify-content-between tax">
+                        <span>Tax</span>
+                        <span class="tax" id="tax">₹ 2.00</span>
+                    </div>
+                    <div class="d-flex justify-content-between discount">
+                        <span>Discount</span>
+                        <span class="discount" id="discount">₹ 0.00</span>
+                    </div>
+                    <hr class="total-divider" />
+                    <div class="d-flex justify-content-between">
+                        <span>Total</span>
+                        <h5 class="total m-0" id="total">₹ 22.00</h5>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center gap-3 mt-2 mb-3">
+                    <div>
+                        <span>Payment Type :</span>
+                    </div>
+                    <div class="date-periode">
+                        <select class="form-select bg-transparent" aria-label="Default select example" id="paymentType">
+                            <option value="0" selected>Payment type</option>
+                            <option value="Cash">Cash</option>
+                            <option value="Card">Card</option>
+                            <option value="Online">Online</option>
+                        </select>
+                        <span class="icon"><i class="bi bi-credit-card-2-back-fill"></i></span>
+                    </div>
+                </div>
+               
+                <div class="d-flex gap-2">
+                    <button class="btn w-100 justify-content-center btn-primary btn-sm btn-print-invoice">
+                        <span><i class="bi bi-printer-fill"></i></span>
+                        <span>Print Invoice</span>
+                    </button>
+                    <button class="btn btn-success w-100 justify-content-center btnUserOrder gap-0 text-nowrap" id="user-payment">
+                        <span><i class="bi bi-currency-rupee"></i></span>
+                        <span>Payment Received</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="order-details-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered m-w-fit-content">
+        <div class="modal-content">
+            <div class="card-header bg-transparent">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Order Details</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <div>
+                        <h6 class="m-0">OrderId - #<span id="details-order-id"></span></h6>
+                    </div>
+                    <table class="table table-responsive mt-3" id="tbl-order-details">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Menu</th>
+                                <th>Category</th>
+                                <th>Quantity</th>
+                                <th>Size</th>
+                                <th>Order Status</th>
+                                <th>Price</th>
+                                <th>Sub Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/js/admin.js"></script>

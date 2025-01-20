@@ -1,0 +1,68 @@
+﻿@model CategoryViewModel
+
+<div class="card">
+    <div class="card-header bg-transparent">
+        <div class="float-end">
+            <button class="btn btn-primary" onclick="showModal('category-modal')"><i class="bi bi-plus-circle-fill"></i> Add New Category</button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="w-100 overflow-auto">
+            <table class="table table-hover" id="tbl-category">
+                <thead>
+                    <tr>
+                        <th scope="col">Sr No</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Created By</th>
+                        <th scope="col">Created On</th>
+                        <th scope="col">Modified By</th>
+                        <th scope="col">Modified On</th>
+                        <th scope="col">Is Active</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="category-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="card-header bg-transparent">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Menu Categories</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            </div>
+            <form id="category-form">
+                <div class="modal-body">
+                    <div class="d-flex flex-column gap-3">
+                        @Html.AntiForgeryToken()
+                        <div class="form-group">
+                            <label asp-for="Name"></label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Description"></label>
+                            <input asp-for="Description" class="form-control" />
+                            <span asp-validation-for="Description" class="text-danger"></span>
+                        </div>
+                        <input type="hidden" id="category-id" />
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="~/js/category.js"></script>

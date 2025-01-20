@@ -1,0 +1,68 @@
+﻿@model APIResponseEntity
+
+<div class="main-container d-flex">
+    <div class="container">
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            @{
+                int i = 0;
+            }
+            @foreach (var hall in Model.data)
+            {
+                if (i == 0)
+                {
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="pills_@hall.HallId" data-bs-toggle="pill" data-bs-target="#tab_@hall.HallId" type="button" role="tab" aria-controls="tab_@hall.HallId" aria-selected="true">
+                            @hall.HallName
+                        </button>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pills_@hall.HallId" data-bs-toggle="pill" data-bs-target="#tab_@hall.HallId" type="button" role="tab" aria-controls="tab_@hall.HallId" aria-selected="true">
+                            @hall.HallName
+                        </button>
+                    </li>
+                }
+                i++;
+            }
+        </ul>
+        <div class="tab-content" id="pills-tabContent">
+            @{
+                i = 0;
+                string activeClass = "active";
+            }
+            @foreach (var hall in Model.data)
+            {
+                if (i > 0)
+                {
+                    activeClass = "";
+                }
+                i++;
+                <div class="tab-pane fade show @activeClass" id="tab_@hall.HallId" role="tabpanel" aria-labelledby="pills_@hall.HallId" tabindex="0">
+                    <div class="menu-container justify-content-start">
+                        @foreach (var table in hall.tables)
+                        {
+                            string occupiedClass = "table-unoccupied";
+                            if (table.IsOccupied)
+                            {
+                                occupiedClass = "table-occupied";
+                            }
+                            <a href="@Url.Action("Order", "Captain", new { table=table.Id })" class="text-decoration-none @occupiedClass">
+                                <div class="card menu-card bg-transparent border-0 w-auto">
+                                    <div class="image_container w-auto">
+                                        <img src="/menuImages/DinningSmallTable.svg" alt="tables" class="h-100" />
+                                    </div>
+                                    <div class="title">
+                                        <span>@table.Name</span>
+                                    </div>
+                                </div>
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+        
+    </div>
+</div>

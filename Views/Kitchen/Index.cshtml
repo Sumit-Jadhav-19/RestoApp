@@ -1,0 +1,32 @@
+﻿<div class="d-flex flex-wrap gap-2">
+    <div class="kitchen-order-container">
+        <div>
+            <h5 class="ps-4 pe-3 pt-2 pb-2 d-flex gap-3 m-0 ">
+                <span class="text-capitalize">New Orders</span> <p class="new-order-count m-0">0</p>
+            </h5>
+        </div>
+        <hr class="mt-0" />
+        <div class="kitchen-order-content"></div>
+    </div>
+    <div class="kitchen-order-container">
+        <div>
+            <h5 class="ps-4 pe-3 pt-2 pb-2 d-flex gap-3 m-0 ">
+                <span class="text-capitalize">Processing</span> <p class="procssing-order-count m-0">0</p>
+            </h5>
+        </div>
+        <hr class="mt-0" />
+        <div class="kitchen-order-processing-content"></div>
+    </div>
+    <div class="kitchen-order-container">
+        <div>
+            <h5 class="ps-4 pe-3 pt-2 pb-2 d-flex gap-3 m-0 ">
+                <span class="text-capitalize">Completed</span> <p class="completed-order-count m-0">0</p>
+            </h5>
+        </div>
+        <hr class="mt-0" />
+        <div class="kitchen-order-completed-content"></div>
+    </div>
+</div>
+<script src="~/js/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/chat.js"></script>
+<script src="~/js/kitchen.js"></script>

@@ -1,0 +1,66 @@
+﻿@model TableViewModel
+<div class="card">
+    <div class="card-header bg-transparent">
+        <div class="float-end">
+            <button class="btn btn-primary" onclick="showModal('table-modal')"><i class="bi bi-plus-circle-fill"></i> Add New Table</button>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="w-100 overflow-auto">
+            <table class="table table-hover" id="tbl-table">
+                <thead>
+                    <tr>
+                        <th scope="col">Sr No</th>
+                        <th scope="col">Table Name</th>
+                        <th scope="col">Table Description</th>
+                        <th scope="col">Created By</th>
+                        <th scope="col">Created On</th>
+                        <th scope="col">Modified By</th>
+                        <th scope="col">Modified On</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="table-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="card-header bg-transparent">
+                <div class="d-flex align-items-center justify-content-between">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Tables</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+            </div>
+            <form id="table-form">
+                <div class="modal-body">
+                    <div class="d-flex flex-column gap-3">
+                        @Html.AntiForgeryToken()
+                        <div class="form-group">
+                            <label asp-for="HallId"></label>
+                            <select asp-for="HallId" asp-items="Model.Halls" class="form-control"></select>
+                            <span asp-validation-for="HallId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Name"></label>
+                            <input asp-for="Name" class="form-control" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                        <input type="hidden" id="table-id" />
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent">
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="~/js/table.js"></script>
