@@ -6,11 +6,11 @@
             <div class="d-flex align-items-center gap-2">
                 <h6 class="m-0">Date Periode : </h6>
                 <div class="date-periode">
-                    <select class="form-select" aria-label="Default select example">
+                    <select class="form-select" aria-label="Default select example" id="date-periode-filter">
                         <option selected>All</option>
-                        <option value="1">Montly</option>
-                        <option value="2">Weekly</option>
-                        <option value="3">Daily</option>
+                        <option value="Monthly">Monthly</option>
+                        <option value="Weekly">Weekly</option>
+                        <option value="Daily">Daily</option>
                     </select>
                     <span class="icon"><i class="bi bi-calendar3"></i></span>
                 </div>
@@ -25,12 +25,12 @@
                     <span>Total Sales Amount</span>
                 </div>
                 <div class="admin-sales-details-content">
-                    <h4>₹ 12000.00</h4>
+                    <h4 id="total-sale-amt">₹ 12000.00</h4>
                 </div>
             </div>
             <div class="admin-sales-details-footer green d-flex align-items-center justify-content-between mt-3">
-                <span class="in-rupee">+ ₹ 1000.00</span>
-                <span class="in-per pe-0"><span>12.02%</span> <span class="icon-up ms-1"><i class="bi bi-arrow-up"></i></span></span>
+                <span class="in-rupee" id="total-sale-detail">+ ₹ 1000.00</span>
+                <span class="in-per pe-0" id="total-sale-per"></span>
             </div>
         </div>
         <div class="card admin-sales">
@@ -40,12 +40,12 @@
                     <span>Total Items sales</span>
                 </div>
                 <div class="admin-sales-details-content">
-                    <h4>₹ 12000.00</h4>
+                    <h4 id="total-item-sale">₹ 12000.00</h4>
                 </div>
             </div>
             <div class="admin-sales-details-footer green d-flex align-items-center justify-content-between mt-3">
-                <span class="in-rupee">+ ₹ 1000.00</span>
-                <span class="in-per pe-0"><span>12.02%</span> <span class="icon-up ms-1"><i class="bi bi-arrow-up"></i></span></span>
+                <span class="in-rupee" id="totalItemSaleDetail">+ ₹ 1000.00</span>
+                <span class="in-per pe-0" id="totalItemSalePer"><span>12.02%</span> <span class="icon-up ms-1"><i class="bi bi-arrow-up"></i></span></span>
             </div>
         </div>
         <div class="card admin-sales">
@@ -55,27 +55,27 @@
                     <span>Total Net Profit</span>
                 </div>
                 <div class="admin-sales-details-content">
-                    <h4>₹ 12000.00</h4>
+                    <h4 id="total-net-profit">₹ 12000.00</h4>
                 </div>
             </div>
             <div class="admin-sales-details-footer green d-flex align-items-center justify-content-between mt-3">
-                <span class="in-rupee">+ ₹ 1000.00</span>
-                <span class="in-per pe-0"><span>12.02%</span> <span class="icon-up ms-1"><i class="bi bi-arrow-up"></i></span></span>
+                <span class="in-rupee" id="totalNetDetail">+ ₹ 1000.00</span>
+                <span class="in-per pe-0" id="totalNetPer"><span>12.02%</span> <span class="icon-up ms-1"><i class="bi bi-arrow-up"></i></span></span>
             </div>
         </div>
         <div class="card admin-sales">
             <div class="admin-sales-details">
                 <div class="admin-sales-details-header">
-                    <span class="icon"><i class="bi bi-graph-up-arrow"></i></span>
-                    <span>Total Sales Amount</span>
+                    <span class="icon"><i class="bi bi-people"></i></span>
+                    <span>Total Customers</span>
                 </div>
                 <div class="admin-sales-details-content">
-                    <h4>₹ 12000.00</h4>
+                    <h4 id="total-customer">₹ 12000.00</h4>
                 </div>
             </div>
-            <div class="admin-sales-details-footer red d-flex align-items-center justify-content-between mt-3">
-                <span class="in-rupee">- ₹ 1000.00</span>
-                <span class="in-per pe-0"><span>12.02%</span> <span class="icon-up ms-1"><i class="bi bi-arrow-up"></i></span></span>
+            <div class="admin-sales-details-footer d-flex align-items-center justify-content-between mt-3">
+                <span class="in-rupee" id="totalCustomerDetail">- ₹ 1000.00</span>
+                <span class="in-per pe-0" id="totalCustomerPer"><span>12.02%</span> <span class="icon-up ms-1"><i class="bi bi-arrow-up"></i></span></span>
             </div>
         </div>
     </div>

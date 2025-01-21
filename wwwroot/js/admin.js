@@ -1,52 +1,17 @@
 ﻿$(function () {
     GetOrderBills();
     GetTop100Ordsers();
+    GetDashboardData("");
+    GetChartData();
     $('#user-payment').click(function () {
         PaymentConfirmed();
     });
-
-    const ctx = document.getElementById('salesChart').getContext('2d');
-    const salesChart = new Chart(ctx, {
-        type: 'line', 
-        data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June'], 
-            datasets: [{
-                label: 'Monthly Sales', 
-                data: [5000, 7000, 8000, 6000, 9000, 10000], 
-                borderColor: 'rgba(153, 117, 251, 1)', 
-                backgroundColor: 'rgba(75, 192, 192, 0.2)', 
-                tension: 0.4, 
-                borderWidth: 2 
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    display: true, 
-                    position: 'top'
-                },
-                tooltip: {
-                    enabled: true 
-                }
-            },
-            scales: {
-                x: {
-                    title: {
-                        display: true,
-                        text: 'Months' 
-                    }
-                },
-                y: {
-                    title: {
-                        display: true,
-                        text: 'Sales (in INR)' 
-                    },
-                    beginAtZero: true 
-                }
-            }
-        }
+    $('#date-periode-filter').change(function () {
+        let datePeriode = $(this).val();
+        GetDashboardData(datePeriode);
     });
+
+    
 });
 
 function GetOrderBills() {
@@ -125,7 +90,6 @@ function PaymentConfirmed() {
             });
     }
 }
-
 function GetTop100Ordsers() {
     callGetApi('Admin/GetTop100Orders')
         .then(data => {
@@ -189,5 +153,80 @@ function GetOrderDetailById(orderId) {
             }
             $('#tbl-order-details tbody').html(strHtml);
             $('#order-details-modal').modal('show');
+        });
+}
+
+function GetDashboardData(t) {
+    callGetApi('Admin/GetDashboardData', { type :t})
+        .then(data => {
+            console.log(data);
+            $('#total-sale-amt').text(`₹ ${data.totalSale}`);
+            $('#total-sale-detail').text(`${data.isSaleIncreased ? '+' : '-'} ₹ ${data.totalSaleDetail}`);
+            $('#total-sale-per').html(`<span>${data.isSaleIncreased ? '+' : '-'} ${data.totalSalePer}%</span> <span class="icon-up ms-1"><i class="bi bi-arrow-up"></i></span>`);
+            $('#total-sale-detail').parent().removeClass('green').removeClass('red').addClass(data.isSaleIncreased ? 'green' : 'red');
+
+            $('#total-item-sale').text(`${data.totalItemSale}`);
+            $('#totalItemSaleDetail').text(`${data.isItemSaleIncreased ? '+' : '-'} ${data.totalItemSaleDetail}`);
+            $('#totalItemSalePer').html(`<span>${data.isItemSaleIncreased ? '+' : '-'} ${data.totalItemSalePer}%</span> <span class="icon-up ms-1"><i class="bi bi-arrow-up"></i></span>`);
+            $('#totalItemSaleDetail').parent().removeClass('green').removeClass('red').addClass(data.isItemSaleIncreased ? 'green' : 'red');
+
+            $('#total-net-profit').text(`₹ ${data.totalNetProfit}`);
+            $('#totalNetDetail').text(`${data.isNetProfitIncreased ? '+' : '-'} ₹ ${data.totalNetDetail}`);
+            $('#totalNetPer').html(`<span>${data.isNetProfitIncreased ? '+' : '-'} ${data.totalNetPer}%</span> <span class="icon-up ms-1"><i class="bi bi-arrow-up"></i></span>`);
+            $('#totalNetDetail').parent().removeClass('green').removeClass('red').addClass(data.isNetProfitIncreased ? 'green' : 'red');
+
+            $('#total-customer').text(`${data.totalCustomer}`);
+            $('#totalCustomerDetail').text(`${data.isCustomerIncreased ? '+' : '-'} ₹ ${data.totalCustomerDetail}`);
+            $('#totalCustomerPer').html(`<span>${data.isCustomerIncreased ? '+' : '-'} ${data.totalCustomerPer}%</span> <span class="icon-up ms-1"><i class="bi bi-arrow-up"></i></span>`);
+            $('#totalCustomerDetail').parent().removeClass('green').removeClass('red').addClass(data.isCustomerIncreased ? 'green' : 'red');
+        });
+
+}
+function GetChartData() {
+    callGetApi('Admin/GetChartData', {type:'day'})
+        .then(data => {
+            console.log(data);
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            const salesChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.months,
+                    datasets: [{
+                        label: 'Monthly Sales',
+                        data: data.sales,
+                        borderColor: 'rgba(153, 117, 251, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        tension: 0.4,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            enabled: true
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Months'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Sales (in INR)'
+                            },
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
         });
 }
