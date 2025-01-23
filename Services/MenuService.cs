@@ -178,6 +178,11 @@ namespace RestoApp.Services
                     {
                         menu.ImagePath = menu.MenuId.ToString() + "" + fileExtension;
                     }
+                    else
+                    {
+                        menu.ImagePath = "No-Image.png";
+                    }
+
                     var MenuExist = await GetMenuByNameAsync(menu.Name);
                     if (MenuExist == null)
                     {

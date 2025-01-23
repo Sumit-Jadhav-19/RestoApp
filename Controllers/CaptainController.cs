@@ -56,5 +56,15 @@ namespace RestoApp.Controllers
             var result = await menuService.OrderBillAsync(tableId);
             return Json(result);
         }
+        public async Task<IActionResult> DeletePrevOrderItem(long DetailsId)
+        {
+            var result = await menuService.DeletePrevOrderItemAsync(DetailsId);
+            return Json(result);
+        }
+        public async Task<IActionResult> UpdatePrevOrderItem(long detailsId, int quantity, string size)
+        {
+            var result = await menuService.UpdatePrevOrderItemAsync(detailsId, quantity, size);
+            return Json(result);
+        }
     }
 }

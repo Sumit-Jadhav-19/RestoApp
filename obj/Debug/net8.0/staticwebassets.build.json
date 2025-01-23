@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "uzoI8EaUY9l+cP0K1h4AEOdjkmbhrLPhkkb7MBb5Rj4=",
+  "Hash": "6dZYuhpVGWf0ekbObdyyK/CTHw0svl6UouG88LEMK/0=",
   "Source": "RestoApp",
   "BasePath": "_content/RestoApp",
   "Mode": "Default",
@@ -1744,6 +1744,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\menuImages\\DinningTable.svg"
+    },
+    {
+      "Identity": "C:\\Users\\Sumit Jadhav\\source\\repos\\RestoApp\\RestoApp\\wwwroot\\menuImages\\No-Image.png",
+      "SourceId": "RestoApp",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\Sumit Jadhav\\source\\repos\\RestoApp\\RestoApp\\wwwroot\\",
+      "BasePath": "_content/RestoApp",
+      "RelativePath": "menuImages/No-Image.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\menuImages\\No-Image.png"
     }
   ]
 }

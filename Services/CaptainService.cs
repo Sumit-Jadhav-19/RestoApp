@@ -159,13 +159,16 @@ namespace RestoApp.Services
                 var menus = await (from od in context.OrderDetails
                                    join m in context.Menus on od.MenuId equals m.MenuId
                                    join om in context.OrderMasters on od.OrderId equals om.OrderId
-                                   where om.TableId == tabelId && om.IsActive == true && om.OrderStatus == false && om.HallId == hallId
+                                   where om.TableId == tabelId && om.IsActive == true && od.IsActive == true && om.OrderStatus == false && om.HallId == hallId
                                    select new
                                    {
                                        om.OrderId,
+                                       od.DetailsId,
                                        m.Name,
                                        od.Quantity,
                                        od.Size,
+                                       od.IsAccept,
+                                       od.OrderStatus
                                    }).ToListAsync();
                 _response.statusCode = 1;
                 _response.status = "Success";
@@ -274,6 +277,95 @@ namespace RestoApp.Services
                     _response.statusCode = 1;
                     _response.status = "Success";
                     _response.message = "Bill Ordered successfully";
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.statusCode = 0;
+                _response.status = "Failed";
+                _logger.LogError(ex, "An error occurred in {ServiceName} at {Time}", nameof(CaptainService), DateTime.Now);
+            }
+            return _response;
+        }
+        public async Task<APIResponseEntity> DeletePrevOrderItemAsync(long DetailsId)
+        {
+            APIResponseEntity _response = new APIResponseEntity();
+            try
+            {
+                var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
+                var IsAcceptorderDetails = await context.OrderDetails.Where(o => o.DetailsId == DetailsId && o.IsAccept).FirstOrDefaultAsync();
+                if (IsAcceptorderDetails == null)
+                {
+                    var orderDetails = await context.OrderDetails.Where(o => o.DetailsId == DetailsId && !o.IsAccept).FirstOrDefaultAsync();
+                    if (orderDetails is not null)
+                    {
+                        orderDetails.IsActive = false;
+                        orderDetails.OrderStatus = "C";
+                        orderDetails.DataModifiedBy = user.Id;  
+                        orderDetails.DataModifiedOn = DateTime.Now;
+                        context.OrderDetails.Update(orderDetails);
+                        await context.SaveChangesAsync();
+                        _response.statusCode = 1;
+                        _response.status = "Success";
+                        _response.message = "Order item Cancled successfully";
+                    }
+                    else
+                    {
+                        _response.statusCode = 0;
+                        _response.status = "Failed";
+                        _response.message = "Order item not found";
+                    }
+                }
+                else
+                {
+                    _response.statusCode = 0;
+                    _response.status = "Failed";
+                    _response.message = "Order is accepted you can't cancle this item !";
+                }
+            }
+            catch (Exception ex)
+            {
+                _response.statusCode = 0;
+                _response.status = "Failed";
+                _logger.LogError(ex, "An error occurred in {ServiceName} at {Time}", nameof(CaptainService), DateTime.Now);
+            }
+            return _response;
+        }
+        public async Task<APIResponseEntity> UpdatePrevOrderItemAsync(long DetailsId, int Qty, string Size)
+        {
+            APIResponseEntity _response = new APIResponseEntity();
+            try
+            {
+                var orderDetails = await context.OrderDetails.Where(o => o.DetailsId == DetailsId && !o.IsAccept).FirstOrDefaultAsync();
+                if (orderDetails is not null)
+                {
+                    orderDetails.Quantity = Qty;
+                    orderDetails.Size = Size;
+                    orderDetails.SubTotal = orderDetails.Price * Qty;
+                    context.OrderDetails.Update(orderDetails);
+                    await context.SaveChangesAsync();
+                    var kitchenRolesUser = await (from con in context.UserConnections
+                                                  join u in context.Users on con.UserId equals u.Id
+                                                  join ur in context.UserRoles on u.Id equals ur.UserId
+                                                  join r in context.Roles on ur.RoleId equals r.Id
+                                                  where r.Name.ToUpper() == "CHEF"
+                                                  select new
+                                                  {
+                                                      con.ConnectionId
+                                                  }).ToListAsync();
+                    foreach (var u in kitchenRolesUser)
+                    {
+                        await _hubContext.Clients.Client(u.ConnectionId.ToString()).SendAsync("ReceiveMessage", "System", "KitchenOrder");
+                    }
+                    _response.statusCode = 1;
+                    _response.status = "Success";
+                    _response.message = "Order item updated successfully";
+                }
+                else
+                {
+                    _response.statusCode = 0;
+                    _response.status = "Failed";
+                    _response.message = "Order item is Accepted !";
                 }
             }
             catch (Exception ex)

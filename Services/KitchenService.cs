@@ -43,7 +43,7 @@ namespace RestoApp.Services
                 var orders = await (from om in context.OrderMasters
                                     join od in context.OrderDetails on om.OrderId equals od.OrderId
                                     join m in context.Menus on od.MenuId equals m.MenuId
-                                    where od.IsAccept == false && string.IsNullOrEmpty(od.OrderStatus)
+                                    where od.IsAccept == false && string.IsNullOrEmpty(od.OrderStatus) && od.IsActive
                                     group new
                                     {
                                         od.OrderId,
@@ -118,10 +118,11 @@ namespace RestoApp.Services
             APIResponseEntity _response = new APIResponseEntity();
             try
             {
+                DateTime date = DateTime.Now;
                 var orders = await (from om in context.OrderMasters
                                     join od in context.OrderDetails on om.OrderId equals od.OrderId
                                     join m in context.Menus on od.MenuId equals m.MenuId
-                                    where od.IsAccept && !string.IsNullOrEmpty(od.OrderStatus) && od.OrderStatus == "C"
+                                    where od.IsAccept && !string.IsNullOrEmpty(od.OrderStatus) && od.OrderStatus == "C" && om.OrderDateTime.Date >= date.Date.AddDays(-1) && om.OrderDateTime.Date <= date.Date.AddDays(1)
                                     group new
                                     {
                                         od.OrderId,
@@ -131,7 +132,8 @@ namespace RestoApp.Services
                                         od.Size,
                                         om.OrderStatus,
                                         od.DataModifiedOn,
-                                        od.OrderCount
+                                        od.OrderCount,
+                                        om.OrderDateTime
                                     } by new { od.OrderId, od.OrderCount } into order
                                     select new
                                     {
@@ -139,8 +141,9 @@ namespace RestoApp.Services
                                         OrderCount = order.Key.OrderCount,
                                         AcceptedDate = order.FirstOrDefault().DataModifiedOn,
                                         OrderStatus = order.FirstOrDefault().OrderStatus,
+                                        OrderDatetime = order.FirstOrDefault().OrderDateTime,
                                         orders = order.ToList(),
-                                    }).OrderBy(o => o.OrderStatus).ToListAsync();
+                                    }).OrderByDescending(o => o.OrderDatetime).ToListAsync();
                 _response.statusCode = 1;
                 _response.status = "Success";
                 _response.data = orders;
@@ -171,6 +174,14 @@ namespace RestoApp.Services
                         context.OrderDetails.Update(order);
                         await context.SaveChangesAsync();
                     }
+                    var captain = await (from con in context.UserConnections
+                                         join om in context.OrderMasters on con.UserId equals om.CaptainId
+                                         where om.OrderId == OrderId
+                                         select new
+                                         {
+                                             con.ConnectionId
+                                         }).FirstOrDefaultAsync();
+                    await _hubContext.Clients.Client(captain.ConnectionId.ToString()).SendAsync("ReceiveMessage", "System", "OREDERACCEPT");
                     _response.statusCode = 1;
                     _response.status = "Success";
                     _response.message = "Order accepeted !";
@@ -200,15 +211,22 @@ namespace RestoApp.Services
                         context.OrderDetails.Update(order);
                         await context.SaveChangesAsync();
                     }
-                    //var existingOrder = await context.OrderMasters.Where(o => o.OrderId == OrderId).FirstOrDefaultAsync();
-                    //if (existingOrder != null)
-                    //{
-                    //    existingOrder.OrderStatus = true;
-                    //    existingOrder.DataModifiedOn = DateTime.Now;
-                    //    existingOrder.DataModifiedBy = user.Id;
-                    //    context.OrderMasters.Update(existingOrder);
-                    //    await context.SaveChangesAsync();
-                    //}
+                    var captain = await (from con in context.UserConnections
+                                         join om in context.OrderMasters on con.UserId equals om.CaptainId
+                                         where om.OrderId == OrderId
+                                         select new
+                                         {
+                                             con.ConnectionId
+                                         }).FirstOrDefaultAsync();
+                    var tableDetails = await (from om in context.OrderMasters
+                                              where om.OrderId == OrderId
+                                              select new
+                                              {
+                                                  om.TableId,
+                                                  table = context.Tables.Where(t => t.Id == om.TableId).Select(t => t.Name).FirstOrDefault(),
+                                                  hall=context.Halls.Where(h => h.HallId == om.HallId).Select(h => h.HallName).FirstOrDefault()
+                                              }).FirstOrDefaultAsync();
+                    await _hubContext.Clients.Client(captain.ConnectionId.ToString()).SendAsync("ReceiveMessage", "System", $"Your order is ready, please pickup and serve. Table {tableDetails.table}- Hall {tableDetails.hall}.");
                     _response.statusCode = 1;
                     _response.status = "Success";
                     _response.message = "Order completed !";

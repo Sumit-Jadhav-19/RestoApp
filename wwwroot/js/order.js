@@ -1,4 +1,5 @@
-﻿var queryString = window.location.search;
+﻿
+var queryString = window.location.search;
 var urlParams = new URLSearchParams(queryString);
 let userOrders = [];
 $(function () {
@@ -32,23 +33,62 @@ function GetPreviousOrders() {
         .then(data => {
             console.log(data);
             let strOrders = '';
+            $('.accordion').html('');
             $.each(data, function (i, v) {
                 $('.preOrderId').text(v.orderId);
                 $('#orderId').val(v.orderId);
-                let size = v.size.toUpperCase() === 'F' ? 'Full' : 'Half';
-                strOrders += `<div class="d-flex align-items-center gap-1 pt-3 pb-3 ps-2 pe-2 border-bottom">
-                <span><i class="bi bi-chevron-right"></i></span>
-                <div class="d-flex align-items-center gap-3 fw-600">
-                    <span>${v.name}</span> <span>-</span>
-                    <div class="d-flex align-items-center">
-                        <h5 class="m-0 quant">${v.quantity}</h5>
-                        <i class="bi bi-dot fs-3"></i>
-                        <span class="size">${size}</span>
+                let isAccept = v.isAccept ? '' : `<span class="accordion-close" onclick="deletePrevOrderItem('${v.detailsId}')"><i class="bi bi-trash-fill text-danger"></i></span>`
+                let strSize = '';
+
+                let orderStatus = v.isAccept ? v.orderStatus == "C" ? `<div class="isAccept text-success">Completed</div>` : `<div class="isAccept text-primary">Preparing</div>` : `<div class="isAccept text-danger">Not Accept</div>`;
+                if (data.isHalfAvailable) {
+                    strSize = `<div>
+                            <span>Size</span>
+                            <div class="size-box d-flex align-items-center fs-3 gap-2">
+                                <div>
+                                    <input type="radio" class="form-check-inline d-none" id="rd${v.detailsId}_f" name="g_${v.detailsId}" value="h"  onchange="handleRadioChange(this)"/>
+                                    <label for="rd${v.detailsId}_f"><i class="bi bi-heart-half"></i></label>
+                                </div>
+                                <div>
+                                    <input type="radio" class="form-check-inline d-none" id="rd${v.detailsId}_s" name="g_${v.detailsId}" value="f" checked  onchange="handleRadioChange(this)"/>
+                                    <label for="rd${v.detailsId}_s"><i class="bi bi-suit-heart-fill"></i></label>
+                                </div>
+                            </div>
+                        </div>`;
+                }
+                strOrders = `<div class="accordion__item position-relative" id="${v.detailsId}">
+                <div class="d-flex align-items-center justify-content-between pe-3">
+                    <div class="accordion__header d-flex align-items-center gap-2" id="faq${v.detailsId}" onclick=toggleAccordionItem('faq${v.detailsId}') data-menuId='${v.detailsId}'>
+                        <span><i class="bi bi-chevron-right"></i></span>
+                        <div class="d-flex align-items-center gap-3">
+                            <span>${v.name}</span> <span>-</span>
+                            <div class="d-flex align-items-center">
+                                <h5 class="m-0 quant">${v.quantity}</h5>
+                                <i class="bi bi-dot fs-3"></i>
+                               ${v.size.toLowerCase() == "f" ? '<span class="size">Full</span>' : '<span class="size">Half</span>'} 
+                            </div>
+                        </div>
                     </div>
+                    ${isAccept}
+                </div>
+                <div class="accordion__content" id="faq${v.detailsId}_content">
+                ${orderStatus}
+                    <div class="p-3 d-flex justify-content-between">
+                        <div>
+                            <span>Quantity</span>
+                            <div class="quantity-box">
+                                <button class="btn btn-primary" onclick="decreaseQuantity(this)">-</button>
+                                <input type="number" id="quantity" min="1" value="${v.quantity}">
+                                <button class="btn btn-primary" onclick="increaseQuantity(this)">+</button>
+                            </div>
+                        </div>
+                ${strSize}
+                    </div>
+                    ${v.isAccept ? '' : '<div class="d-flex justify-content-center mb-2" onclick="updatePrevItem(this)"><button class="btn btn-primary">Update</button></div>'} 
                 </div>
             </div>`;
+                $('.accordion').append(strOrders);
             });
-            $('.accordion').html(strOrders);
             if (data.length > 0) {
                 $('.btnUserBill').attr('disabled', false);
                 $('.btnUserOrder').attr('disabled', true);
@@ -152,32 +192,13 @@ function addOrders(menuId, menu) {
         else {
             return;
         }
-        strOrder = `<div class="accordion__item">
-                <div class="d-flex align-items-center justify-content-between pe-3">
-                    <div class="accordion__header d-flex align-items-center gap-2" id="faq${menuId}" onclick=toggleAccordionItem('faq${menuId}') data-menuId='${menuId}'>
-                        <span><i class="bi bi-chevron-right"></i></span>
-                        <div class="d-flex align-items-center gap-3">
-                            <span>${menu}</span> <span>-</span>
-                            <div class="d-flex align-items-center">
-                                <h5 class="m-0 quant">1</h5>
-                                <i class="bi bi-dot fs-3"></i>
-                                <span class="size">Full</span>
-                            </div>
-                        </div>
-                    </div>
-                    <span class="accordion-close" onclick="deleteOrderItem(event)"><i class="bi bi-x-circle-fill"></i></span>
-                </div>
-                <div class="accordion__content" id="faq${menuId}_content">
-                    <div class="p-3 d-flex justify-content-between">
-                        <div>
-                            <span>Quantity</span>
-                            <div class="quantity-box">
-                                <button class="btn btn-primary" onclick="decreaseQuantity(this)">-</button>
-                                <input type="number" id="quantity" value="1" min="1">
-                                <button class="btn btn-primary" onclick="increaseQuantity(this)">+</button>
-                            </div>
-                        </div>
-                        <div>
+
+        callGetApi('Menu/GetMenuById', { Id: menuId })
+            .then(data => {
+                console.log(data);
+                let strSize = '';
+                if (data.isHalfAvailable) {
+                    strSize = `<div>
                             <span>Size</span>
                             <div class="size-box d-flex align-items-center fs-3 gap-2">
                                 <div>
@@ -189,19 +210,46 @@ function addOrders(menuId, menu) {
                                     <label for="rd${menuId}_s"><i class="bi bi-suit-heart-fill"></i></label>
                                 </div>
                             </div>
+                        </div>`;
+                }
+                strOrder = `<div class="accordion__item">
+                <div class="d-flex align-items-center justify-content-between pe-3">
+                    <div class="accordion__header d-flex align-items-center gap-2" id="faq${menuId}" onclick=toggleAccordionItem('faq${menuId}') data-menuId='${menuId}'>
+                        <span><i class="bi bi-chevron-right"></i></span>
+                        <div class="d-flex align-items-center gap-3">
+                            <span>${menu}</span> <span>-</span>
+                            <div class="d-flex align-items-center">
+                                <h5 class="m-0 quant">1</h5>
+                               ${data.isHalfAvailable ? '<i class="bi bi-dot fs-3"></i> <span class="size">Full</span>' : ''} 
+                            </div>
                         </div>
+                    </div>
+                    <span class="accordion-close" onclick="deleteOrderItem(event)"><i class="bi bi-trash-fill text-danger"></i></span>
+                </div>
+                <div class="accordion__content" id="faq${menuId}_content">
+                    <div class="p-3 d-flex justify-content-between">
+                        <div>
+                            <span>Quantity</span>
+                            <div class="quantity-box">
+                                <button class="btn btn-primary" onclick="decreaseQuantity(this)">-</button>
+                                <input type="number" id="quantity" value="1" min="1">
+                                <button class="btn btn-primary" onclick="increaseQuantity(this)">+</button>
+                            </div>
+                        </div>
+                ${strSize}
                     </div>
                 </div>
             </div>`;
-        $('.accordion').append(strOrder);
+                $('.accordion').append(strOrder);
 
-        console.log(userOrders);
-        orderCount++;
-        $('.order-count').removeClass('d-none');
-        $('.order-count').text(orderCount);
-        if (userOrders.length > 0) {
-            $('.btnUserOrder').attr('disabled', false);
-        }
+                console.log(userOrders);
+                orderCount++;
+                $('.order-count').removeClass('d-none');
+                $('.order-count').text(orderCount);
+                if (userOrders.length > 0) {
+                    $('.btnUserOrder').attr('disabled', false);
+                }
+            });
     }
 }
 function AddUserOrders() {
@@ -225,4 +273,25 @@ function OrderBill() {
         .then(data => {
 
         });
+}
+
+function deletePrevOrderItem(Id) {
+    console.log(Id);
+    confirmation()
+        .then(res => {
+            if (res) {
+                callPostApi('Captain/DeletePrevOrderItem', { detailsId: Id })
+                    .then(data => {
+                        GetPreviousOrders();
+                    });
+            }
+        });
+}
+function updatePrevItem(quantityInput) {
+    const quant = quantityInput.previousElementSibling;
+    callPostApi('Captain/UpdatePrevOrderItem', { detailsId: quantityInput.closest('.accordion__item').id, quantity: quant.querySelector('#quantity').value,size:'F' })
+        .then(data => {
+            GetPreviousOrders();
+        });
+
 }

@@ -826,68 +826,30 @@ namespace RestoApp.Controllers
                 List<string> months = new List<string>();
                 List<decimal> sales = new List<decimal>();
 
-                if (string.IsNullOrEmpty(type))
+                if (string.IsNullOrEmpty(type) || type.ToUpper() == "YEAR")
                 {
-                    // Get the current year
-                    int currentYear = DateTime.Now.Year;
 
-                    // Get sales data grouped by month for the current year
-                    var monthlySalesData = await _context.OrderDetails
-                        .Where(od => od.DataEnteredOn.Year == currentYear)
-                        .GroupBy(od => od.DataEnteredOn.Month)  // Group by month
-                        .Select(g => new
-                        {
-                            Month = g.Key,  // Month number (1-12)
-                            TotalSales = g.Sum(od => od.SubTotal)  // Sum of sales for that month
-                        })
-                        .OrderBy(g => g.Month)  // Optional: Sort by month
-                        .ToListAsync();
-
-                    foreach (var data in monthlySalesData)
+                    for (int i = 0; i < 12; i++)
                     {
-                        // Add the month name to the list (e.g., "January", "February", etc.)
-                        months.Add(new DateTime(currentYear, data.Month, 1).ToString("MMMM"));
 
-                        // Add the total sales for the month to the list
-                        sales.Add(data.TotalSales);
-                    }
-                }
-                else if (type == "Week")
-                {
-                    // Get the current year
-                    int currentYear = DateTime.Now.Year;
+                        DateTime date = DateTime.Now.AddMonths(-i);
 
-                    // First, fetch the data from the database and filter by the current year
-                    var orderDetails = await _context.OrderDetails
-                        .Where(od => od.DataEnteredOn.Year == currentYear)
-                        .ToListAsync();  // Load data into memory
-
-                    // Now, group by week and calculate the total sales in memory
-                    var weeklySalesData = orderDetails
-                        .GroupBy(od => new
-                        {
-                            Week = CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(od.DataEnteredOn, CalendarWeekRule.FirstDay, DayOfWeek.Sunday),
-                            Year = od.DataEnteredOn.Year
-                        })
+                        months.Add(date.ToString("MMM yyyy"));
+                        var monthlySalesData = await _context.OrderDetails
+                        .Where(od => od.DataEnteredOn.Year == date.Year && od.DataEnteredOn.Month == date.Month)
+                        .GroupBy(od => od.DataEnteredOn.Month)
                         .Select(g => new
                         {
-                            Week = g.Key.Week,
-                            Year = g.Key.Year,
+                            Month = g.Key,
                             TotalSales = g.Sum(od => od.SubTotal)
                         })
-                        .OrderBy(g => g.Week)  // Optional: Sort by week number
-                        .ToList();  // Now the data is grouped and summed in memory
-
-
-                    foreach (var data in weeklySalesData)
-                    {
-                        // Format the week range (e.g., "Week 1 (Jan 01 - Jan 07)")
-                        months.Add($"Week {data.Week} ({new DateTime(data.Year, 1, 1).AddDays((data.Week - 1) * 7).ToString("MMM dd")} - {new DateTime(data.Year, 1, 1).AddDays(data.Week * 7 - 1).ToString("MMM dd")})");
-
-                        // Add the total sales for the week
-                        sales.Add(data.TotalSales);
+                        .OrderBy(g => g.Month)
+                        .FirstOrDefaultAsync();
+                        var salesData = monthlySalesData?.TotalSales ?? 0;
+                        sales.Add(salesData);
                     }
-
+                    months.Reverse();
+                    sales.Reverse();
                 }
                 else
                 {

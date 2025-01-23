@@ -7,7 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\js\captainChat.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Services\KitchenService.cs~RF825616.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="wwwroot\js\captainChat.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\js\captainChat.js" />
   </ItemGroup>
 
   <ItemGroup>

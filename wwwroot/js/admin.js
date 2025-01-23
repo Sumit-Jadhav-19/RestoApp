@@ -10,8 +10,10 @@
         let datePeriode = $(this).val();
         GetDashboardData(datePeriode);
     });
-
-    
+    $('#date-periode-chart-filter').change(function () {
+        let datePeriode = $(this).val();
+        GetChartData(datePeriode);
+    });
 });
 
 function GetOrderBills() {
@@ -157,7 +159,7 @@ function GetOrderDetailById(orderId) {
 }
 
 function GetDashboardData(t) {
-    callGetApi('Admin/GetDashboardData', { type :t})
+    callGetApi('Admin/GetDashboardData', { type: t })
         .then(data => {
             console.log(data);
             $('#total-sale-amt').text(`₹ ${data.totalSale}`);
@@ -182,17 +184,22 @@ function GetDashboardData(t) {
         });
 
 }
-function GetChartData() {
-    callGetApi('Admin/GetChartData', {type:'day'})
+function GetChartData(t) {
+    callGetApi('Admin/GetChartData', { type: t })
         .then(data => {
             console.log(data);
+            t = t == undefined ? 'Year' : t;
+            // Check if a chart already exists and destroy it
+            if (window.myChart) {
+                window.myChart.destroy();
+            }
             const ctx = document.getElementById('salesChart').getContext('2d');
-            const salesChart = new Chart(ctx, {
+            const config = {
                 type: 'line',
                 data: {
                     labels: data.months,
                     datasets: [{
-                        label: 'Monthly Sales',
+                        label: `${t}ly Sales`,
                         data: data.sales,
                         borderColor: 'rgba(153, 117, 251, 1)',
                         backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -215,7 +222,7 @@ function GetChartData() {
                         x: {
                             title: {
                                 display: true,
-                                text: 'Months'
+                                text: t
                             }
                         },
                         y: {
@@ -227,6 +234,9 @@ function GetChartData() {
                         }
                     }
                 }
-            });
+            };
+
+            const salesChart = new Chart(ctx, config);
+            window.myChart = salesChart;
         });
 }

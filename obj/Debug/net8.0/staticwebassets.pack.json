@@ -361,6 +361,10 @@
       "PackagePath": "staticwebassets\\menuImages\\DinningTable.svg"
     },
     {
+      "Id": "C:\\Users\\Sumit Jadhav\\source\\repos\\RestoApp\\RestoApp\\wwwroot\\menuImages\\No-Image.png",
+      "PackagePath": "staticwebassets\\menuImages\\No-Image.png"
+    },
+    {
       "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.RestoApp.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     },
