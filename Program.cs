@@ -33,6 +33,7 @@ builder.Services.AddScoped<HallService>();
 builder.Services.AddScoped<TableService>();
 builder.Services.AddScoped<CaptainService>();
 builder.Services.AddScoped<KitchenService>();
+builder.Services.AddScoped<AdminService>();
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSignalR();

@@ -19,7 +19,6 @@
 function GetOrderBills() {
     callGetApi('Admin/GetOrderdBills')
         .then(data => {
-            console.log(data);
             let strHtml = '';
             if (data.length > 0) {
                 $.each(data, function (i, v) {
@@ -33,19 +32,17 @@ function GetOrderBills() {
                 });
             }
             else {
-                console.log(data.length);
                 strHtml += `<tr class='text-secondary text-center'><td colspan=5>No billing orders !<td></tr>`;
             }
-            console.log(strHtml);
             $('#tbl-Order-bills tbody').html(strHtml);
         });
 }
 function GetOrderDetails(orderId) {
-    console.log(orderId);
     callGetApi(`Admin/GetOrderdBillsById/`, { OrderId: orderId })
         .then(data => {
             if (data.length > 0) {
                 let strHtml = '';
+                console.log(data);
                 $.each(data[0].menus, function (i, v) {
                     let size = v.size.toUpperCase() == "F" ? '' : ' <span>Half</span>';
                     strHtml += `<div class="d-flex align-items-center gap-1 pt-2 pb-2 ps-2 pe-2 border-bottom">
@@ -71,18 +68,20 @@ function GetOrderDetails(orderId) {
                 $('#discount').text(`₹ 0.00`);
                 $('#total').text(`₹ ${data[0].total} `);
                 $('#offcanvas-billing-orders').offcanvas('show');
+
+                let printData = JSON.stringify(data);
+                console.log(printData);
+                $('#print-invoice').attr('href', `print://${data[0].orderId}`);
             }
         });
 }
 function PaymentConfirmed() {
     let orderId = $('#orderId').val();
     let paymentType = $('#paymentType').val();
-    console.log(paymentType);
     if (paymentType == 0) {
         toast('w', 'Please select payment type');
         return;
     }
-    console.log(orderId);
     if (orderId != null) {
         callPostApi('Admin/PaymentConfirmed', { OrderId: orderId, paymentType: paymentType })
             .then(data => {
@@ -95,7 +94,6 @@ function PaymentConfirmed() {
 function GetTop100Ordsers() {
     callGetApi('Admin/GetTop100Orders')
         .then(data => {
-            console.log(data);
             let strHtml = '';
             if (data.length > 0) {
                 $.each(data, function (i, v) {
@@ -161,7 +159,6 @@ function GetOrderDetailById(orderId) {
 function GetDashboardData(t) {
     callGetApi('Admin/GetDashboardData', { type: t })
         .then(data => {
-            console.log(data);
             $('#total-sale-amt').text(`₹ ${data.totalSale}`);
             $('#total-sale-detail').text(`${data.isSaleIncreased ? '+' : '-'} ₹ ${data.totalSaleDetail}`);
             $('#total-sale-per').html(`<span>${data.isSaleIncreased ? '+' : '-'} ${data.totalSalePer}%</span> <span class="icon-up ms-1"><i class="bi bi-arrow-up"></i></span>`);
@@ -187,7 +184,6 @@ function GetDashboardData(t) {
 function GetChartData(t) {
     callGetApi('Admin/GetChartData', { type: t })
         .then(data => {
-            console.log(data);
             t = t == undefined ? 'Year' : t;
             // Check if a chart already exists and destroy it
             if (window.myChart) {
